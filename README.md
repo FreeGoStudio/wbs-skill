@@ -8,13 +8,41 @@
 
 ## 使用
 
-将 `skills/wbs` 文件夹复制到 Codex 的用户技能目录（通常为 `~/.codex/skills/wbs`）。已存在同名技能时先检查差异，避免覆盖本地修改。重新打开会话后可调用：
+安装后重新打开会话，可调用：
 
 ```text
 使用 $wbs，将以下已确认需求拆成任务，沿用项目现有编号和目录。
 ```
 
 也可请求调整已有工作包或检查任务依赖。技能不执行任务开发，不默认生成工时，不自动迁移旧清单。
+
+## 脚本安装
+
+已有本地项目时，在 PowerShell 中执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\workspace\wbs-skill\scripts\install-skill.ps1
+```
+
+或在克隆后的项目根目录运行 `./scripts/install-skill.ps1`。默认读取 `CODEX_HOME`，未设置时安装到 `%USERPROFILE%\.codex\skills\wbs`。可用 `-CodexHome "D:\Codex"` 指定安装到 `D:\Codex\skills\wbs`。
+
+更新时再次运行同一命令。脚本先复制并校验文件，再替换安装目录；旧版本保存在 Codex 目录的 `skill-backups` 中，不会作为重复技能加载。安装暂存目录位于 `skill-install-staging`。
+
+从 Git 安装需要 Git，使用 [install-from-git.ps1](scripts/install-from-git.ps1)：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\install-from-git.ps1 -RepoUrl "https://github.com/FreeGoStudio/wbs-skill.git" -Branch main
+```
+
+脚本每次克隆到临时目录的新子目录，调用本地安装器；不重置已有仓库。支持 `-CodexHome` 和 `-InstallRoot`，下载的副本保留在输出路径。
+
+**远程一行安装需先将本项目文件推送到该仓库的 main 分支。** 当前本地交付不表示远程已发布；发布后可使用：
+
+```powershell
+iwr -UseB https://raw.githubusercontent.com/FreeGoStudio/wbs-skill/main/scripts/install-from-git.ps1 | iex
+```
+
+本地安装器：[install-skill.ps1](scripts/install-skill.ps1)。
 
 ## 维护与验证
 
